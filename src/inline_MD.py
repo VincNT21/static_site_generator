@@ -2,6 +2,8 @@ import re
 from textnode import TextType, TextNode
 
 
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     if len(old_nodes) == 0:
         raise ValueError('node list is empty')
@@ -15,6 +17,8 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             if len(text_in_list) % 2 == 0:
                 raise ValueError('delimiter not found or invalid number of delimiter')
             for i, text in enumerate(text_in_list):
+                if text_in_list[i] == '':
+                    continue
                 if i % 2 == 0:
                     new_node.append(TextNode(text, TextType.TEXT))
                 else:
@@ -24,7 +28,48 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return new_nodes
     
 def extract_markdown_images(text):
-    return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+    regex_for_images = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    return re.findall(regex_for_images, text)
 
 def extract_markdown_links(text):
-    return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+    regex_for_links = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    return re.findall(regex_for_links, text)
+
+def split_nodes_images(old_nodes):
+    if len(old_nodes) == 0:
+        raise ValueError('node list is empty')
+    new_nodes = []
+    for node in old_nodes:
+        new_node = []
+        original_text = node.text
+        for link in extract_markdown_images(node.text):
+            alt_text = link[0]
+            url = link[1]
+            if original_text.split(f'![{alt_text}]({url})', 1)[0] == '':
+                continue
+            else:
+                new_node.append(TextNode(original_text.split(f'![{alt_text}]({url})', 1)[0], TextType.TEXT))
+                new_node.append(TextNode(alt_text, TextType.IMAGE, url))
+            original_text = original_text.split(f'![{alt_text}]({url})', 1)[1]
+        new_nodes.extend(new_node)
+    return new_nodes
+
+
+def split_nodes_links(old_nodes):
+    if len(old_nodes) == 0:
+        raise ValueError('node list is empty')
+    new_nodes = []
+    for node in old_nodes:
+        new_node = []
+        original_text = node.text
+        for link in extract_markdown_links(node.text):
+            link_text = link[0]
+            url = link[1]
+            if original_text.split(f'[{link_text}]({url})', 1)[0] == '':
+                continue
+            else:
+                new_node.append(TextNode(original_text.split(f'[{link_text}]({url})', 1)[0], TextType.TEXT))
+                new_node.append(TextNode(link_text, TextType.LINK, url))
+            original_text = original_text.split(f'[{link_text}]({url})', 1)[1]
+        new_nodes.extend(new_node)
+    return new_nodes
