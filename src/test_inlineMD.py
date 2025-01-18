@@ -386,5 +386,10 @@ class TestTextToTextNodes(unittest.TestCase):
             text_to_textnodes('**bold* and *italic*')
         self.assertEqual(str(context.exception), 'delimiter not found or invalid number of delimiter')
 
+
+
+
+
+
 if __name__ == "__main__":
     unittest.main()
