@@ -66,7 +66,7 @@ class TestBlockType(unittest.TestCase):
         self.assertEqual(block_to_block_type('* list\n* listlist'), BlockType.UNORD_LIST)
         self.assertEqual(block_to_block_type('- list\n- listlist'), BlockType.UNORD_LIST)
         self.assertEqual(block_to_block_type('1. un\n2. deux'), BlockType.ORD_LIST)
-        self.assertEqual(block_to_block_type('```code```'), BlockType.CODE)
+        self.assertEqual(block_to_block_type('```\ncode\n```'), BlockType.CODE)
         self.assertEqual(block_to_block_type('# heading'), BlockType.HEADING)
         self.assertEqual(block_to_block_type('random text'), BlockType.PARAGRAPH)
 

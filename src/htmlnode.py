@@ -8,6 +8,7 @@ class HTMLNode:
 
     def to_html(self):
         raise NotImplementedError('method not implemented')
+    # A FAIRE EN CUMULANT LES DEUX CI DESSOUS CORRECTEMENT
     
     def props_to_html(self):
         if self.props is None:
