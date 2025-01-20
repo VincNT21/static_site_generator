@@ -44,10 +44,10 @@ def convert_quote_block(block):
     return HTMLNode('blockquote', None, children)
 
 def convert_code_block(block):
-    block = block.removeprefix('```')
-    block = block.removesuffix('```')
+    block = block.removeprefix('```\n')
+    block = block.removesuffix('\n```')
     children = text_to_children(block)
-    return HTMLNode('code', None, children)
+    return HTMLNode('pre', None, [HTMLNode('code', None, children)])
 
 def convert_unordered_list_block(block):
     block_split = block.split('\n')
@@ -73,5 +73,7 @@ def convert_ordered_list_block(block):
     return HTMLNode('ol', None, children)
 
 def convert_paragraph_block(block):
-    children = text_to_children(block)
+    lines = block.split('\n')
+    paragraph = ' '.join(lines)
+    children = text_to_children(paragraph)
     return HTMLNode('p', None, children)

@@ -7,8 +7,17 @@ class HTMLNode:
         self.props = props
 
     def to_html(self):
-        raise NotImplementedError('method not implemented')
-    # A FAIRE EN CUMULANT LES DEUX CI DESSOUS CORRECTEMENT
+        if self.value == None and self.children != None:
+            children_html= ''
+            for child in self.children:
+                children_html += child.to_html()
+            return f'<{self.tag}{self.props_to_html()}>{children_html}</{self.tag}>'
+        if self.value == None and self.children == None:
+            return f'<{self.tag}{self.props_to_html()}>'
+        if self.value != None:
+            return self.value
+        else:
+            raise Exception('there is a problem with to_html function')
     
     def props_to_html(self):
         if self.props is None:
@@ -22,6 +31,7 @@ class HTMLNode:
         return f'HTMLNode({self.tag}, {self.value}, children: {self.children}, props: {self.props})'
     
 
+# Those 2 classes are now useless
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
         super().__init__(tag, value, None, props)
