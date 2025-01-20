@@ -2,4 +2,6 @@ __pycache__/
 test.sh
 myspace.py
 .vscode/
-
+static/
+public/
+test_copy/

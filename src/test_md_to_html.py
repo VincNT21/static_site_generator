@@ -1,6 +1,6 @@
 import unittest
 
-from MD_to_HTML import markdown_to_html_node
+from MD_to_HTML import markdown_to_html_node, extract_title
 from htmlnode import HTMLNode
 
 class TestMD_to_HTML_node(unittest.TestCase):
@@ -67,6 +67,10 @@ class TestMD_to_HTML_node(unittest.TestCase):
             '<div><ul><li>This is line 1</li><li>This is line 2</li><li>This is line 3</li></ul><ol><li>Ordered line 1</li><li>Ordered line 2</li><li>Ordered line 3</li></ol></div>'
         )
 
+class TestExtract_Title(unittest.TestCase):
+    def test_extract(self):
+        md_doc = '> There is a code before everything\n> It is weird\n\n# This is the TITLE !\n\nThis is a paragraph text\nOn multiple lines#\n\n## Header 2\n\n* And also a list\n* With multiple items'
+        self.assertEqual(extract_title(md_doc), 'This is the TITLE !')
 
 if __name__ == '__main__':
     unittest.main()

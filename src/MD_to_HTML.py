@@ -3,6 +3,14 @@ from htmlnode import HTMLNode, ParentNode, LeafNode
 from inline_MD import text_to_textnodes
 from textnode import TextType, TextNode, text_node_to_html_node
 
+def extract_title(markdown):
+    lines = markdown_to_blocks(markdown)
+    for line in lines:
+        if not line.startswith('# '):
+            continue
+        else:
+            return line.removeprefix('# ')
+
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
     block_nodes_children = []
@@ -39,7 +47,7 @@ def convert_heading_block(block):
 
 def convert_quote_block(block):
     lines = block.split('\n')
-    text = '\n'.join(line.removeprefix('>') for line in lines)
+    text = '\n'.join(line.removeprefix('> ') for line in lines)
     children = text_to_children(text) 
     return HTMLNode('blockquote', None, children)
 
