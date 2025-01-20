@@ -7,11 +7,12 @@ from htmlnode import HTMLNode
 def main():
     path_static = '/home/vincnt/workspace/SSG/static_site_generator/static'
     path_public = '/home/vincnt/workspace/SSG/static_site_generator/public'
+    path_content = '/home/vincnt/workspace/SSG/static_site_generator/content'
     path_content_index = '/home/vincnt/workspace/SSG/static_site_generator/content/index.md'
     path_public_index = '/home/vincnt/workspace/SSG/static_site_generator/public/index.html'
     path_template = '/home/vincnt/workspace/SSG/static_site_generator/template.html'
     copy_contents(path_static, path_public)
-    generate_page(path_content_index, path_template, path_public_index)
+    generate_pages_recursive(path_content, path_template, path_public)
 
 def copy_contents(from_path, to_path):
     if os.path.exists(to_path):
@@ -93,5 +94,27 @@ def generate_page(from_path, template_path, dest_path):
     except Exception as e:
         print(f'Unexpected error while writing {dest_path}: {e}')
         return
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    md_files = searching_md_files(dir_path_content)
+    for file in md_files:
+        relative_path = os.path.relpath(file, dir_path_content)
+        relative_path = relative_path.removesuffix('.md') + '.html'
+        generate_page(file, template_path, os.path.join(dest_dir_path, relative_path))
+
+
+def searching_md_files(dir_path):
+    md_list = []
+    for entry in os.listdir(dir_path):
+        entry_path = os.path.join(dir_path, entry)
+        if os.path.isfile(entry_path) and '.md' in entry:
+            md_list.append(entry_path)
+        if os.path.isfile(entry_path):
+            continue
+        else:
+            md_list.extend(searching_md_files(entry_path))
+    return md_list
+    
+
 
 main()
